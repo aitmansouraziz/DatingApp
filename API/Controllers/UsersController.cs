@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -41,6 +42,24 @@ namespace API.Controllers
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             return await this._userRepository.GetMemberByUsernameAsync(username);
+        }
+
+
+        // api/users
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+        {
+            string username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var user = await this._userRepository.GetUserByUsernameAsync(username);
+             _mapper.Map(memberUpdateDto, user);
+            this._userRepository.Update(user);
+            if (await _userRepository.SaveAllAsync())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("failed to update the user");
         }
     }
 }

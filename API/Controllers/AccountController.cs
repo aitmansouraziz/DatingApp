@@ -18,7 +18,7 @@ namespace API.Controllers
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context,ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService)
         {
             this._context = context;
             this._tokenService = tokenService;
@@ -52,7 +52,7 @@ namespace API.Controllers
         [HttpPost("login")]
 
         public async Task<ActionResult<UserDto>> login(LoginDto loginDto)
-        {            
+        {
             var user = await this._context.Users.SingleOrDefaultAsync(u => u.UserName == loginDto.Username);
             if (user is null)
             {
@@ -78,10 +78,12 @@ namespace API.Controllers
 
         private async Task<bool> UserExist(string username)
         {
-            
-          return  await this._context.Users.AnyAsync(u => u.UserName == username.ToLower());
-           
+
+            return await this._context.Users.AnyAsync(u => u.UserName == username.ToLower());
+
         }
+
+       
     }
 
 }
